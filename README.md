@@ -23,7 +23,7 @@ The application uses a local instance of AWS DynamoDB to keep track of the trans
 ```
 docker-compose up --build
 
-(Remove --build tag if it isn't the first time running the project)
+(--build tag isn't needed for every single run)
 ```
 * The state of the database is persistent throughout, so you can compose down without losing data
 
