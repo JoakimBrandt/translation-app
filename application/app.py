@@ -1,7 +1,6 @@
 import logging, boto3
 from flask import Flask, jsonify, request
-from Database import getAllItemsForLanguageCode, getTranslationForCodeAndKey, createTranslationForCodeAndKey
-from InitiateDatabase import createTranslationsTable
+from Database import getAllItemsForLanguageCode, getTranslationForCodeAndKey, createTranslationForCodeAndKey, deleteTranslationByCodeAndKey
 
 app = Flask(__name__)
 table = None
@@ -21,8 +20,6 @@ def getAllTranslationsForCode():
             languageCode = request.args.get('language-code')
         if request.args.get('language-key') != None:
             languageKey = request.args.get('language-key')
-
-        logging.info("i got this far")
         
         if (languageCode is not None) and (languageKey is not None):
             items = getTranslationForCodeAndKey(languageCode, languageKey)
@@ -42,10 +39,10 @@ def getAllTranslationsForCode():
 
     except Exception as e:
         logging.error(e)
-        return jsonify("Error in getting translations, dude"), 500
+        return jsonify("Error in getting translations."), 500
 
-@app.route('/translations', methods=['POST'])
-def createTranslation():
+@app.route('/translations', methods=['POST', 'PUT'])
+def upsertTranslation():
     body = None
     try: 
         body = request.json
@@ -67,6 +64,26 @@ def createTranslation():
     
 
     return(body)
+
+@app.route('/translations', methods=['DELETE'])
+def deleteTranslation():
+    try:
+        languageCode = None
+        languageKey = None
+
+        if request.args.get('language-code') is None or request.args.get('language-key') is None:
+            return jsonify("Need both a code and a key to delete a translation."), 500
+            
+        languageKey = request.args.get('language-key')
+        languageCode = request.args.get('language-code')
+
+        response = deleteTranslationByCodeAndKey(languageCode, languageKey)
+
+        return jsonify(response), 200
+
+    except Exception as e:
+        logging.error(e)
+        return jsonify("Error while deleting item"), 500
 
 # We only need this for local development.
 if __name__ == '__main__':

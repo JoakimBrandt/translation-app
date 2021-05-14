@@ -1,6 +1,7 @@
 import logging, boto3
 from flask.json import jsonify
 from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
 from InitiateDatabase import createTranslationsTable
 
 dynamodb = boto3.resource('dynamodb',
@@ -55,3 +56,16 @@ def createTranslationForCodeAndKey(code, key, translation="missing translation")
         return jsonify({'Status': '500', 'Message': 'Error while putting item'})
 
     return response
+
+def deleteTranslationByCodeAndKey(code, key):
+    try:
+        response = table.delete_item(
+            Key={
+                'LanguageCode': code,
+                'LanguageKey': key
+            }
+        )
+    except Exception as e:
+        return jsonify({'Status': '500', 'Message': 'Error while deleting item'})
+    else:
+        return response
