@@ -1,22 +1,22 @@
-import logging
-import boto3
+import logging, boto3
 from flask.json import jsonify
 from boto3.dynamodb.conditions import Key
+from InitiateDatabase import createTranslationsTable
 
 dynamodb = boto3.resource('dynamodb',
-    endpoint_url="http://dynamodb:8000",
-    region_name="eu-north-1",
-    verify=False
-)
+        endpoint_url="http://dynamodb:8000",
+        region_name="eu-north-1",
+        verify=False
+    )
+
+createTranslationsTable(dynamodb)
+
+table = dynamodb.Table("translations")
+
 hashKey = "LanguageCode"
 rangeKey= "LanguageKey"
 
 def getAllItemsForLanguageCode(code):
-    try:
-        table = dynamodb.Table("translations")
-    except Exception as e:
-        return jsonify({'Status': '500', 'Message': 'Could not find table name called translations'})
-
     try:
         response = table.query(
             KeyConditionExpression=Key(hashKey).eq(code)
@@ -33,11 +33,6 @@ def getAllItemsForLanguageCode(code):
 
 def getTranslationForCodeAndKey(code, key):
     try:
-        table = dynamodb.Table("translations")
-    except Exception as e:
-        return jsonify({'Status': '500', 'Message': 'Could not find table name called translations'})
-
-    try:
         response = table.query(
             KeyConditionExpression=Key(hashKey).eq(code) & Key(rangeKey).eq(key)
         )
@@ -48,12 +43,6 @@ def getTranslationForCodeAndKey(code, key):
     return response['Items']
 
 def createTranslationForCodeAndKey(code, key, translation="missing translation"):
-    try:
-        table = dynamodb.Table("translations")
-        
-    except Exception as e:
-        return jsonify({'Status': '500', 'Message': 'Could not find table name called translations'})
-
     try:
         response = table.put_item(
         Item={

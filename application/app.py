@@ -1,8 +1,10 @@
-import logging
+import logging, boto3
 from flask import Flask, jsonify, request
 from Database import getAllItemsForLanguageCode, getTranslationForCodeAndKey, createTranslationForCodeAndKey
+from InitiateDatabase import createTranslationsTable
 
 app = Flask(__name__)
+table = None
 
 @app.route('/alive', methods=['GET'])
 def alive():
@@ -31,12 +33,12 @@ def getAllTranslationsForCode():
         elif (languageCode is None):
             return jsonify("Missing parameters."), 400
 
-        arrayOfTranslations = []
+        translations = {}
 
         for item in items:
-            arrayOfTranslations.append(item['Translation'])
+            translations[item['LanguageKey']] = item['Translation']
 
-        return jsonify(arrayOfTranslations), 200
+        return jsonify(translations), 200
 
     except Exception as e:
         logging.error(e)
@@ -68,4 +70,4 @@ def createTranslation():
 
 # We only need this for local development.
 if __name__ == '__main__':
- app.run(debug=True)
+    app.run(debug=True)
