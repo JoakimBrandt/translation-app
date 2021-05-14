@@ -1,0 +1,25 @@
+version: '3.8'
+
+volumes:
+    dynamodb_data:
+
+services:
+    dynamodb:
+        image: amazon/dynamodb-local:latest
+        command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
+        volumes:
+            - dynamodb_data:/home/dynamodblocal/data
+        ports:
+            - "8000:8000"
+
+    "translation-api":
+        build: "./application"
+        ports:
+        - 5000:5000
+        volumes:
+        - ./application:/app
+        depends_on: 
+            - dynamodb
+        environment:
+            AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
+            AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
