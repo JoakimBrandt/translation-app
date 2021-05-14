@@ -48,6 +48,7 @@ def upsertTranslation():
         body = request.json
         assert body is not None
     except Exception as e:
+        logging.error(e)
         return jsonify({'Status': '500', 'Message': 'Error while fetching request\'s body. Body can\'t be empty.'})
     
     try:
@@ -59,7 +60,7 @@ def upsertTranslation():
         body = createTranslationForCodeAndKey(languageCode, languageKey, translation)
 
     except Exception as e:
-        print(e)
+        logging.error(e)
         return jsonify({'Status': '500', 'Message': 'Some attributes are missing.'})
     
 

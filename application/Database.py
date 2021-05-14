@@ -27,9 +27,6 @@ def getAllItemsForLanguageCode(code):
         logging.error(e)
         return jsonify({'Status': '500', 'Message': 'Error while querying the table'})
 
-    logging.info("___________")
-    logging.info("Response:")
-    logging.info(response)
     return response['Items']
 
 def getTranslationForCodeAndKey(code, key):
@@ -39,6 +36,7 @@ def getTranslationForCodeAndKey(code, key):
         )
         
     except Exception as e:
+        logging.error(e)
         return jsonify({'Status': '500', 'Message': 'Error while querying the table'})
 
     return response['Items']
@@ -53,6 +51,7 @@ def createTranslationForCodeAndKey(code, key, translation="missing translation")
             }
         )
     except Exception as e:
+        logging.error(e)
         return jsonify({'Status': '500', 'Message': 'Error while putting item'})
 
     return response
@@ -66,6 +65,7 @@ def deleteTranslationByCodeAndKey(code, key):
             }
         )
     except Exception as e:
+        logging.error(e)
         return jsonify({'Status': '500', 'Message': 'Error while deleting item'})
     else:
         return response
