@@ -22,6 +22,8 @@ The application uses a local instance of AWS DynamoDB to keep track of the trans
 * Navigate to the base folder (where you can see docker-compose.yml) and run the following command:
 ```
 docker-compose up --build
+
+(Remove --build tag if it isn't the first time running the project)
 ```
 * The state of the database is persistent throughout, so you can compose down without losing data
 
