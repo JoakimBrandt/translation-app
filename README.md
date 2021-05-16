@@ -48,7 +48,7 @@ POST
 localhost:5000/translations
 
 
-Must be formatted accordingly to JSON-API specification https://jsonapi.org/
+Attach a body with format of json, must be formatted accordingly to JSON-API specification https://jsonapi.org/
 {
     "data": {
         "type": "translations",
@@ -67,7 +67,7 @@ PUT (Post requests sent with identical code and key will replace the translation
 
 localhost:5000/translations
 
-Must be formatted accordingly to JSON-API specification https://jsonapi.org/
+Attach a body with format of json, must be formatted accordingly to JSON-API specification https://jsonapi.org/
 {
     "data": {
         "type": "translations",
